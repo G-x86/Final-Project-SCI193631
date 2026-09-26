@@ -1,0 +1,8 @@
+# Private presentation notes — NEVER submit or push these
+private_notes/
+# Temporary local probes (deleted after verification)
+probe_tmp_check.py
+exp_tmp_run.py
+# Python caches
+__pycache__/
+*.pyc
