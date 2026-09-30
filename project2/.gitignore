@@ -1,8 +1,32 @@
 # Private presentation notes — NEVER submit or push these
 private_notes/
-# Temporary local probes (deleted after verification)
+
+# Temporary local probes
 probe_tmp_check.py
 exp_tmp_run.py
+
+# Binaries & downloaded compilers
+tectonic.exe
+*.exe
+
+# Intermediate build / download files
+overleaf_project.zip
+PDF_บน_Overleaf*.pdf
+*Overleaf*
+
+# Runtime temporary score file
+temp
+
 # Python caches
 __pycache__/
 *.pyc
+*.py[cod]
+
+# LaTeX auxiliary files
+*.aux
+*.log
+*.out
+*.toc
+*.fls
+*.fdb_latexmk
+*.synctex*

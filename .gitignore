@@ -1,2 +1,33 @@
+# Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
+*$py.class
+
+# Executables & binaries
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Temporary game files
+temp
+*/temp
+
+# Temporary downloads & archives
+*Overleaf*
+*.zip
+
+# LaTeX build artifacts
+*.aux
+*.log
+*.out
+*.toc
+*.fls
+*.fdb_latexmk
+*.synctex*
+
+# OS / Editor metadata
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
