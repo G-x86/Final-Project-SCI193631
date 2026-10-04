@@ -1,4 +1,10 @@
+import sys
+
 from pacman_module.game import Agent, Directions
+
+# Defensive guard, same reasoning as in minimax.py. H-Minimax is
+# depth-limited so this is less likely to be hit, but costs nothing.
+sys.setrecursionlimit(10000)
 
 
 class PacmanAgent(Agent):
@@ -81,7 +87,9 @@ class PacmanAgent(Agent):
 
         Combines the current game score with a penalty based on the
         distance to the closest food dot, so that Pacman is guided
-        towards food even before actually eating it.
+        towards food even before actually eating it. Ghost danger is
+        already handled by the adversarial search itself within the
+        configured depth, so it is intentionally not duplicated here.
 
         Arguments:
             state: the game state to evaluate.

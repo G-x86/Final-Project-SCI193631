@@ -1,4 +1,10 @@
+import sys
+
 from pacman_module.game import Agent, Directions
+
+# Full Minimax recurses until the game ends, which can exceed Python's
+# default recursion limit on longer games. Raise it defensively.
+sys.setrecursionlimit(10000)
 
 
 class PacmanAgent(Agent):
