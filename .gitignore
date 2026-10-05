@@ -25,6 +25,7 @@ temp
 *.fls
 *.fdb_latexmk
 *.synctex*
+*.lay
 
 # OS / Editor metadata
 .DS_Store

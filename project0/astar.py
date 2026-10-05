@@ -19,14 +19,16 @@ def key(state):
     """
     return (
         state.getPacmanPosition(),
-        tuple(tuple(row) for row in state.getFood())
+        tuple(tuple(row) for row in state.getFood()),
+        tuple(sorted(state.getCapsules()))
     )
 
 
 def heuristic(state):
     """
-    Computes an admissible heuristic for A* based on Manhattan distance
-    to the furthest remaining food dot.
+    Computes an admissible and tight heuristic for A*.
+    Combines the distance to the nearest target with an exact minimum
+    tour (for small target sets) or MST lower bound across targets.
 
     Arguments:
     ----------
@@ -34,19 +36,55 @@ def heuristic(state):
 
     Return:
     -------
-    - An estimated cost (integer) to eat all remaining food dots.
+    - An estimated cost (integer) to collect all remaining targets.
     """
     pos = state.getPacmanPosition()
-    food_grid = state.getFood()
-    food_positions = food_grid.asList()
+    targets = state.getFood().asList() + list(state.getCapsules())
 
-    if not food_positions:
+    if not targets:
         return 0
 
-    return max(
-        abs(pos[0] - fx) + abs(pos[1] - fy)
-        for fx, fy in food_positions
-    )
+    min_dist = min(abs(pos[0] - tx) + abs(pos[1] - ty) for tx, ty in targets)
+
+    min_x = min(tx for tx, ty in targets)
+    max_x = max(tx for tx, ty in targets)
+    min_y = min(ty for tx, ty in targets)
+    max_y = max(ty for tx, ty in targets)
+    span = (max_x - min_x) + (max_y - min_y)
+
+    if len(targets) <= 4:
+        def get_min_tour(curr, remaining):
+            if not remaining:
+                return 0
+            best = float("inf")
+            for nxt in remaining:
+                d = abs(curr[0] - nxt[0]) + abs(curr[1] - nxt[1])
+                rem = [p for p in remaining if p != nxt]
+                cost = d + get_min_tour(nxt, rem)
+                if cost < best:
+                    best = cost
+            return best
+
+        return max(span, get_min_tour(pos, targets))
+
+    unvisited = set(targets)
+    current = unvisited.pop()
+    mst_cost = 0
+    closest_dist = {
+        t: abs(current[0] - t[0]) + abs(current[1] - t[1])
+        for t in unvisited
+    }
+
+    while unvisited:
+        next_target = min(unvisited, key=lambda t: closest_dist[t])
+        mst_cost += closest_dist[next_target]
+        unvisited.remove(next_target)
+        for t in unvisited:
+            d = abs(next_target[0] - t[0]) + abs(next_target[1] - t[1])
+            if d < closest_dist[t]:
+                closest_dist[t] = d
+
+    return max(span, min_dist + mst_cost)
 
 
 class PacmanAgent(Agent):
@@ -117,7 +155,14 @@ class PacmanAgent(Agent):
 
             for next_state, action in current_state.generatePacmanSuccessors():
                 next_key = key(next_state)
-                next_g = g + 1
+
+                step_cost = 1
+                if len(next_state.getCapsules()) < len(
+                    current_state.getCapsules()
+                ):
+                    step_cost += 5
+
+                next_g = g + step_cost
 
                 if next_g < best_g.get(next_key, float("inf")):
                     best_g[next_key] = next_g
