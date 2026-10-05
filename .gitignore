@@ -26,6 +26,7 @@ temp
 *.fdb_latexmk
 *.synctex*
 
+
 # OS / Editor metadata
 .DS_Store
 Thumbs.db

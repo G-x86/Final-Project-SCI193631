@@ -1,0 +1,810 @@
+{
+  "version": 1,
+  "generated_by": "bootstrap_tests.py",
+  "project0": {
+    "weights": {
+      "bfs": 20,
+      "astar": 75,
+      "pep8": 5
+    },
+    "score_part": 0.7,
+    "nodes_part": 0.3,
+    "timeout_sec": 60,
+    "tests": [
+      {
+        "layout": "p0_adjacent",
+        "note": "degenerate case: goal one step away (root goal test, off-by-one)",
+        "agents": [
+          "bfs",
+          "astar"
+        ],
+        "optimal": 509,
+        "ref_states": 1,
+        "nodes": {
+          "bfs": [
+            6,
+            44
+          ],
+          "astar": [
+            6,
+            44
+          ]
+        },
+        "fast": true
+      },
+      {
+        "layout": "p0_capsule_detour",
+        "note": "detour beats the capsule: step cost alone gives the wrong plan",
+        "agents": [
+          "astar"
+        ],
+        "optimal": 500,
+        "ref_states": 15,
+        "nodes": {
+          "bfs": [
+            32,
+            150
+          ],
+          "astar": [
+            17,
+            80
+          ]
+        },
+        "fast": true
+      },
+      {
+        "layout": "p0_capsule_forced",
+        "note": "capsule unavoidable: -5 must appear in the score (A* only)",
+        "agents": [
+          "bfs",
+          "astar"
+        ],
+        "optimal": 491,
+        "ref_states": 15,
+        "nodes": {
+          "bfs": [
+            23,
+            100
+          ],
+          "astar": [
+            22,
+            96
+          ]
+        },
+        "fast": false
+      },
+      {
+        "layout": "p0_corners",
+        "note": "four-corners in an open room: heuristic quality on food ordering",
+        "agents": [
+          "bfs",
+          "astar"
+        ],
+        "optimal": 520,
+        "ref_states": 394,
+        "nodes": {
+          "bfs": [
+            537,
+            1812
+          ],
+          "astar": [
+            82,
+            296
+          ]
+        },
+        "fast": false
+      },
+      {
+        "layout": "p0_corridor",
+        "note": "straight corridor: baseline, catches agents that re-expand states",
+        "agents": [
+          "bfs",
+          "astar"
+        ],
+        "optimal": 499,
+        "ref_states": 11,
+        "nodes": {
+          "bfs": [
+            18,
+            84
+          ],
+          "astar": [
+            18,
+            84
+          ]
+        },
+        "fast": false
+      },
+      {
+        "layout": "p0_deadends",
+        "note": "comb of dead ends: closed set / backtracking",
+        "agents": [
+          "bfs",
+          "astar"
+        ],
+        "optimal": 502,
+        "ref_states": 14,
+        "nodes": {
+          "bfs": [
+            23,
+            100
+          ],
+          "astar": [
+            15,
+            72
+          ]
+        },
+        "fast": false
+      },
+      {
+        "layout": "p0_dense",
+        "note": "8 food dots in a ring; an inadmissible heuristic loses optimality",
+        "agents": [
+          "bfs",
+          "astar"
+        ],
+        "optimal": 562,
+        "ref_states": 489,
+        "nodes": {
+          "bfs": [
+            713,
+            2400
+          ],
+          "astar": [
+            97,
+            348
+          ]
+        },
+        "fast": true
+      },
+      {
+        "layout": "p0_loop",
+        "note": "cycle: infinite loop without a visited set; direction choice matters",
+        "agents": [
+          "bfs",
+          "astar"
+        ],
+        "optimal": 507,
+        "ref_states": 37,
+        "nodes": {
+          "bfs": [
+            53,
+            200
+          ],
+          "astar": [
+            30,
+            124
+          ]
+        },
+        "fast": false
+      },
+      {
+        "layout": "p0_snake",
+        "note": "serpentine: Manhattan is far below true cost -> node count explodes",
+        "agents": [
+          "bfs",
+          "astar"
+        ],
+        "optimal": 488,
+        "ref_states": 22,
+        "nodes": {
+          "bfs": [
+            31,
+            128
+          ],
+          "astar": [
+            31,
+            128
+          ]
+        },
+        "fast": true
+      },
+      {
+        "layout": "p0_star",
+        "note": "4 arms: order of food matters, rewards a sharp heuristic",
+        "agents": [
+          "bfs",
+          "astar"
+        ],
+        "optimal": 532,
+        "ref_states": 193,
+        "nodes": {
+          "bfs": [
+            249,
+            852
+          ],
+          "astar": [
+            115,
+            408
+          ]
+        },
+        "fast": true
+      },
+      {
+        "layout": "p0_tie",
+        "note": "perfect symmetry: two optimal plans, tie-breaking must stay optimal",
+        "agents": [
+          "bfs",
+          "astar"
+        ],
+        "optimal": 512,
+        "ref_states": 19,
+        "nodes": {
+          "bfs": [
+            31,
+            128
+          ],
+          "astar": [
+            23,
+            100
+          ]
+        },
+        "fast": false
+      }
+    ],
+    "fast_timeout_sec": 30
+  },
+  "project1": {
+    "weights": {
+      "minimax": 45,
+      "hminimax": 50,
+      "pep8": 5
+    },
+    "minimax_margin": 0,
+    "timeout_sec": 180,
+    "tests": [
+      {
+        "layout": "p1_longring",
+        "ghost": "dumby",
+        "note": "long ring: Minimax infeasible, H-Minimax cutoff/eval quality",
+        "exact": true,
+        "ceiling": 507,
+        "minimax": false,
+        "hminimax": true,
+        "score_low": 457,
+        "score_high": 507,
+        "nodes_low": 398,
+        "nodes_high": 2650,
+        "seed": 1,
+        "fast": true,
+        "ref_nodes": 265
+      },
+      {
+        "layout": "p1_longring",
+        "ghost": "greedy",
+        "note": "long ring: Minimax infeasible, H-Minimax cutoff/eval quality",
+        "exact": true,
+        "ceiling": 507,
+        "minimax": false,
+        "hminimax": true,
+        "score_low": 457,
+        "score_high": 507,
+        "nodes_low": 398,
+        "nodes_high": 2650,
+        "seed": 1,
+        "fast": false,
+        "ref_nodes": 265
+      },
+      {
+        "layout": "p1_longring",
+        "ghost": "smarty",
+        "note": "long ring: Minimax infeasible, H-Minimax cutoff/eval quality",
+        "exact": false,
+        "ceiling": 507,
+        "minimax": false,
+        "hminimax": true,
+        "score_low": 457,
+        "score_high": 507,
+        "nodes_low": 398,
+        "nodes_high": 2650,
+        "seed": 1,
+        "fast": false,
+        "ref_nodes": 265
+      },
+      {
+        "layout": "p1_pillar",
+        "ghost": "dumby",
+        "note": "open room, one pillar: wide branching, dodging needs the cycle",
+        "exact": true,
+        "ceiling": 512,
+        "minimax": false,
+        "hminimax": true,
+        "score_low": 462,
+        "score_high": 512,
+        "nodes_low": 682,
+        "nodes_high": 4550,
+        "seed": 1,
+        "fast": false,
+        "ref_nodes": 455
+      },
+      {
+        "layout": "p1_pillar",
+        "ghost": "greedy",
+        "note": "open room, one pillar: wide branching, dodging needs the cycle",
+        "exact": true,
+        "ceiling": 508,
+        "minimax": false,
+        "hminimax": true,
+        "score_low": 456,
+        "score_high": 508,
+        "nodes_low": 1794,
+        "nodes_high": 11960,
+        "seed": 1,
+        "fast": true,
+        "ref_nodes": 1196
+      },
+      {
+        "layout": "p1_pillar",
+        "ghost": "smarty",
+        "note": "open room, one pillar: wide branching, dodging needs the cycle",
+        "exact": false,
+        "ceiling": -497,
+        "minimax": false,
+        "hminimax": true,
+        "score_low": -547,
+        "score_high": -497,
+        "nodes_low": 825,
+        "nodes_high": 5500,
+        "seed": 1,
+        "fast": false,
+        "ref_nodes": 550
+      },
+      {
+        "layout": "p1_ring",
+        "ghost": "dumby",
+        "note": "ring: Pacman must keep kiting, never corner itself",
+        "exact": true,
+        "ceiling": 512,
+        "minimax": true,
+        "hminimax": true,
+        "score_low": 462,
+        "score_high": 512,
+        "nodes_low": 135,
+        "nodes_high": 900,
+        "seed": 1,
+        "fast": false,
+        "ref_nodes": 90
+      },
+      {
+        "layout": "p1_ring",
+        "ghost": "greedy",
+        "note": "ring: Pacman must keep kiting, never corner itself",
+        "exact": true,
+        "ceiling": 512,
+        "minimax": true,
+        "hminimax": true,
+        "score_low": 462,
+        "score_high": 512,
+        "nodes_low": 242,
+        "nodes_high": 1610,
+        "seed": 1,
+        "fast": true,
+        "ref_nodes": 161
+      },
+      {
+        "layout": "p1_ring",
+        "ghost": "smarty",
+        "note": "ring: Pacman must keep kiting, never corner itself",
+        "exact": false,
+        "ceiling": 512,
+        "minimax": false,
+        "hminimax": true,
+        "score_low": 462,
+        "score_high": 512,
+        "nodes_low": 135,
+        "nodes_high": 900,
+        "seed": 1,
+        "fast": false,
+        "ref_nodes": 90
+      },
+      {
+        "layout": "p1_stub",
+        "ghost": "dumby",
+        "note": "ghost starts in a 1-cell dead end: half-turn only when forced",
+        "exact": true,
+        "ceiling": 519,
+        "minimax": true,
+        "hminimax": true,
+        "score_low": 468,
+        "score_high": 519,
+        "nodes_low": 396,
+        "nodes_high": 2640,
+        "seed": 1,
+        "fast": false,
+        "ref_nodes": 264
+      },
+      {
+        "layout": "p1_stub",
+        "ghost": "greedy",
+        "note": "ghost starts in a 1-cell dead end: half-turn only when forced",
+        "exact": true,
+        "ceiling": 519,
+        "minimax": true,
+        "hminimax": true,
+        "score_low": 467,
+        "score_high": 519,
+        "nodes_low": 444,
+        "nodes_high": 2960,
+        "seed": 1,
+        "fast": false,
+        "ref_nodes": 296
+      },
+      {
+        "layout": "p1_stub",
+        "ghost": "smarty",
+        "note": "ghost starts in a 1-cell dead end: half-turn only when forced",
+        "exact": false,
+        "ceiling": 518,
+        "minimax": false,
+        "hminimax": true,
+        "score_low": 468,
+        "score_high": 518,
+        "nodes_low": 396,
+        "nodes_high": 2640,
+        "seed": 1,
+        "fast": true,
+        "ref_nodes": 264
+      },
+      {
+        "layout": "p1_theta",
+        "ghost": "dumby",
+        "note": "two loops: several escape routes, ghost model must be respected",
+        "exact": true,
+        "ceiling": 512,
+        "minimax": true,
+        "hminimax": true,
+        "score_low": 462,
+        "score_high": 512,
+        "nodes_low": 279,
+        "nodes_high": 1860,
+        "seed": 1,
+        "fast": false,
+        "ref_nodes": 186
+      },
+      {
+        "layout": "p1_theta",
+        "ghost": "greedy",
+        "note": "two loops: several escape routes, ghost model must be respected",
+        "exact": true,
+        "ceiling": 512,
+        "minimax": true,
+        "hminimax": true,
+        "score_low": 462,
+        "score_high": 512,
+        "nodes_low": 279,
+        "nodes_high": 1860,
+        "seed": 1,
+        "fast": false,
+        "ref_nodes": 186
+      },
+      {
+        "layout": "p1_theta",
+        "ghost": "smarty",
+        "note": "two loops: several escape routes, ghost model must be respected",
+        "exact": false,
+        "ceiling": 512,
+        "minimax": false,
+        "hminimax": true,
+        "score_low": 462,
+        "score_high": 512,
+        "nodes_low": 279,
+        "nodes_high": 1860,
+        "seed": 1,
+        "fast": false,
+        "ref_nodes": 186
+      },
+      {
+        "layout": "p1_tight",
+        "ghost": "dumby",
+        "note": "ghost adjacent at t=0: immediate terminal/danger handling",
+        "exact": true,
+        "ceiling": 513,
+        "minimax": true,
+        "hminimax": true,
+        "score_low": 463,
+        "score_high": 513,
+        "nodes_low": 63,
+        "nodes_high": 420,
+        "seed": 1,
+        "fast": true,
+        "ref_nodes": 42
+      },
+      {
+        "layout": "p1_tight",
+        "ghost": "greedy",
+        "note": "ghost adjacent at t=0: immediate terminal/danger handling",
+        "exact": true,
+        "ceiling": 513,
+        "minimax": true,
+        "hminimax": true,
+        "score_low": 463,
+        "score_high": 513,
+        "nodes_low": 63,
+        "nodes_high": 420,
+        "seed": 1,
+        "fast": false,
+        "ref_nodes": 42
+      },
+      {
+        "layout": "p1_tight",
+        "ghost": "smarty",
+        "note": "ghost adjacent at t=0: immediate terminal/danger handling",
+        "exact": false,
+        "ceiling": 513,
+        "minimax": false,
+        "hminimax": true,
+        "score_low": 463,
+        "score_high": 513,
+        "nodes_low": 63,
+        "nodes_high": 420,
+        "seed": 1,
+        "fast": false,
+        "ref_nodes": 42
+      }
+    ],
+    "fast_timeout_sec": 60
+  },
+  "project2": {
+    "weights": {
+      "models": 50,
+      "belief": 50
+    },
+    "timeout_sec": 180,
+    "static_layout": "p2_pockets",
+    "tests": [
+      {
+        "layout": "p2_comb",
+        "ghost": "scared",
+        "note": "1-cell corridors: transition must follow legal moves only",
+        "steps": 60,
+        "sensor_variance": 1.0,
+        "seed": 1,
+        "quality_pass": 0.341,
+        "quality_target": 0.724,
+        "fast_steps": 30,
+        "fast": false
+      },
+      {
+        "layout": "p2_comb",
+        "ghost": "afraid",
+        "note": "1-cell corridors: transition must follow legal moves only",
+        "steps": 60,
+        "sensor_variance": 1.0,
+        "seed": 1,
+        "quality_pass": 0.324,
+        "quality_target": 0.688,
+        "fast_steps": 30,
+        "fast": false
+      },
+      {
+        "layout": "p2_comb",
+        "ghost": "confused",
+        "note": "1-cell corridors: transition must follow legal moves only",
+        "steps": 60,
+        "sensor_variance": 1.0,
+        "seed": 1,
+        "quality_pass": 0.321,
+        "quality_target": 0.682,
+        "fast_steps": 30,
+        "fast": false
+      },
+      {
+        "layout": "p2_multi",
+        "ghost": "scared",
+        "note": "three ghosts at once: per-ghost independent beliefs",
+        "steps": 60,
+        "sensor_variance": 1.0,
+        "seed": 1,
+        "quality_pass": 0.345,
+        "quality_target": 0.734,
+        "fast_steps": 30,
+        "fast": false
+      },
+      {
+        "layout": "p2_multi",
+        "ghost": "afraid",
+        "note": "three ghosts at once: per-ghost independent beliefs",
+        "steps": 60,
+        "sensor_variance": 1.0,
+        "seed": 1,
+        "quality_pass": 0.308,
+        "quality_target": 0.655,
+        "fast_steps": 30,
+        "fast": false
+      },
+      {
+        "layout": "p2_multi",
+        "ghost": "confused",
+        "note": "three ghosts at once: per-ghost independent beliefs",
+        "steps": 60,
+        "sensor_variance": 1.0,
+        "seed": 1,
+        "quality_pass": 0.274,
+        "quality_target": 0.581,
+        "fast_steps": 30,
+        "fast": false
+      },
+      {
+        "layout": "p2_open",
+        "ghost": "scared",
+        "note": "open room: transition model with no wall structure",
+        "steps": 60,
+        "sensor_variance": 1.0,
+        "seed": 1,
+        "quality_pass": 0.319,
+        "quality_target": 0.679,
+        "fast_steps": 30,
+        "fast": false
+      },
+      {
+        "layout": "p2_open",
+        "ghost": "afraid",
+        "note": "open room: transition model with no wall structure",
+        "steps": 60,
+        "sensor_variance": 1.0,
+        "seed": 1,
+        "quality_pass": 0.234,
+        "quality_target": 0.497,
+        "fast_steps": 30,
+        "fast": false
+      },
+      {
+        "layout": "p2_open",
+        "ghost": "confused",
+        "note": "open room: transition model with no wall structure",
+        "steps": 60,
+        "sensor_variance": 1.0,
+        "seed": 1,
+        "quality_pass": 0.206,
+        "quality_target": 0.438,
+        "fast_steps": 30,
+        "fast": false
+      },
+      {
+        "layout": "p2_pockets",
+        "ghost": "scared",
+        "note": "dead-end pockets: zero mass on walls, trapped-mass handling",
+        "steps": 60,
+        "sensor_variance": 1.0,
+        "seed": 1,
+        "quality_pass": 0.321,
+        "quality_target": 0.683,
+        "fast_steps": 30,
+        "fast": true
+      },
+      {
+        "layout": "p2_pockets",
+        "ghost": "afraid",
+        "note": "dead-end pockets: zero mass on walls, trapped-mass handling",
+        "steps": 60,
+        "sensor_variance": 1.0,
+        "seed": 1,
+        "quality_pass": 0.296,
+        "quality_target": 0.63,
+        "fast_steps": 30,
+        "fast": true
+      },
+      {
+        "layout": "p2_pockets",
+        "ghost": "confused",
+        "note": "dead-end pockets: zero mass on walls, trapped-mass handling",
+        "steps": 60,
+        "sensor_variance": 1.0,
+        "seed": 1,
+        "quality_pass": 0.241,
+        "quality_target": 0.513,
+        "fast_steps": 30,
+        "fast": true
+      },
+      {
+        "layout": "p2_ring",
+        "ghost": "scared",
+        "note": "ring corridor: belief must stay on the corridor, bimodal mass",
+        "steps": 60,
+        "sensor_variance": 1.0,
+        "seed": 1,
+        "quality_pass": 0.351,
+        "quality_target": 0.745,
+        "fast_steps": 30,
+        "fast": false
+      },
+      {
+        "layout": "p2_ring",
+        "ghost": "afraid",
+        "note": "ring corridor: belief must stay on the corridor, bimodal mass",
+        "steps": 60,
+        "sensor_variance": 1.0,
+        "seed": 1,
+        "quality_pass": 0.339,
+        "quality_target": 0.72,
+        "fast_steps": 30,
+        "fast": false
+      },
+      {
+        "layout": "p2_ring",
+        "ghost": "confused",
+        "note": "ring corridor: belief must stay on the corridor, bimodal mass",
+        "steps": 60,
+        "sensor_variance": 1.0,
+        "seed": 1,
+        "quality_pass": 0.322,
+        "quality_target": 0.684,
+        "fast_steps": 30,
+        "fast": false
+      },
+      {
+        "layout": "p2_two_rooms",
+        "ghost": "scared",
+        "note": "two rooms, one door: multimodal belief, mass must cross the door",
+        "steps": 60,
+        "sensor_variance": 1.0,
+        "seed": 1,
+        "quality_pass": 0.323,
+        "quality_target": 0.687,
+        "fast_steps": 30,
+        "fast": false
+      },
+      {
+        "layout": "p2_two_rooms",
+        "ghost": "afraid",
+        "note": "two rooms, one door: multimodal belief, mass must cross the door",
+        "steps": 60,
+        "sensor_variance": 1.0,
+        "seed": 1,
+        "quality_pass": 0.243,
+        "quality_target": 0.517,
+        "fast_steps": 30,
+        "fast": false
+      },
+      {
+        "layout": "p2_two_rooms",
+        "ghost": "confused",
+        "note": "two rooms, one door: multimodal belief, mass must cross the door",
+        "steps": 60,
+        "sensor_variance": 1.0,
+        "seed": 1,
+        "quality_pass": 0.254,
+        "quality_target": 0.54,
+        "fast_steps": 30,
+        "fast": false
+      },
+      {
+        "layout": "p2_pockets",
+        "ghost": "scared",
+        "note": "noisy sensor (variance 4): likelihood must stay correct",
+        "steps": 60,
+        "sensor_variance": 4.0,
+        "seed": 2,
+        "quality_pass": 0.285,
+        "quality_target": 0.605,
+        "fast_steps": 30,
+        "fast": false
+      },
+      {
+        "layout": "p2_pockets",
+        "ghost": "afraid",
+        "note": "noisy sensor (variance 4): likelihood must stay correct",
+        "steps": 60,
+        "sensor_variance": 4.0,
+        "seed": 2,
+        "quality_pass": 0.167,
+        "quality_target": 0.355,
+        "fast_steps": 30,
+        "fast": false
+      },
+      {
+        "layout": "p2_pockets",
+        "ghost": "confused",
+        "note": "noisy sensor (variance 4): likelihood must stay correct",
+        "steps": 60,
+        "sensor_variance": 4.0,
+        "seed": 2,
+        "quality_pass": 0.159,
+        "quality_target": 0.338,
+        "fast_steps": 30,
+        "fast": false
+      }
+    ],
+    "fast_timeout_sec": 60
+  }
+}
