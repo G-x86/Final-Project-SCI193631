@@ -1,10 +1,22 @@
 import sys
+from collections import defaultdict
 
 from pacman_module.game import Agent, Directions
 
 # Defensive guard, same reasoning as in minimax.py. H-Minimax is
 # depth-limited so this is less likely to be hit, but costs nothing.
 sys.setrecursionlimit(10000)
+
+# Used to penalize immediately reversing direction (a 180-degree
+# turn), which otherwise causes Pacman to oscillate forever between
+# two equally good looking positions.
+OPPOSITE_DIRECTION = {
+    Directions.NORTH: Directions.SOUTH,
+    Directions.SOUTH: Directions.NORTH,
+    Directions.EAST: Directions.WEST,
+    Directions.WEST: Directions.EAST,
+    Directions.STOP: Directions.STOP,
+}
 
 
 class PacmanAgent(Agent):
@@ -24,8 +36,23 @@ class PacmanAgent(Agent):
         # score quality against the number of expanded nodes.
         self.depth = depth
 
+        # Counts how many times Pacman has actually occupied each
+        # position during the real game (not simulated search nodes).
+        # Helps discourage repeatedly camping on the same spot.
+        self.visit_count = defaultdict(int)
+
+        # The action actually taken on the previous real move. Used
+        # to break ties that would otherwise cause Pacman to reverse
+        # direction forever (e.g. walking north then south, repeat).
+        self.last_action = Directions.STOP
+
     def get_action(self, state):
         """Given a Pacman game state, returns a legal move.
+
+        This top-level decision is handled separately from the rest
+        of the recursion so that a small anti-reversal tie-break can
+        be applied to the real move about to be taken, without
+        affecting the deeper, purely adversarial search.
 
         Arguments:
             state: a game state. See API or class `pacman.GameState`.
@@ -34,8 +61,30 @@ class PacmanAgent(Agent):
             A legal move as defined in `game.Directions`.
         """
 
-        _, action = self.hminimax(state, 0, self.depth)
-        return action
+        self.visit_count[state.getPacmanPosition()] += 1
+
+        num_agents = state.getNumAgents()
+        next_index = 1 % num_agents
+        next_depth = self.depth if next_index != 0 else self.depth - 1
+
+        successors = state.generatePacmanSuccessors()
+
+        best_value, best_action = float("-inf"), Directions.STOP
+        reversal = OPPOSITE_DIRECTION[self.last_action]
+
+        for successor, action in successors:
+            value, _ = self.hminimax(successor, next_index, next_depth)
+
+            # Only breaks exact ties (difference of 0): never strong
+            # enough to override a real, meaningful preference.
+            if action == reversal:
+                value -= 0.5
+
+            if value > best_value:
+                best_value, best_action = value, action
+
+        self.last_action = best_action
+        return best_action
 
     def hminimax(self, state, agent_index, depth):
         """Recursively computes the H-Minimax value of a state.
@@ -85,11 +134,13 @@ class PacmanAgent(Agent):
     def evaluate(self, state):
         """Heuristic evaluation of a non-terminal state.
 
-        Combines the current game score with a penalty based on the
-        distance to the closest food dot, so that Pacman is guided
-        towards food even before actually eating it. Ghost danger is
-        already handled by the adversarial search itself within the
-        configured depth, so it is intentionally not duplicated here.
+        Combines the current game score with:
+        - a penalty based on the distance to the closest food dot,
+          so that Pacman is guided towards food even before
+          actually eating it;
+        - a small penalty proportional to how often Pacman has
+          actually been at this exact position already, discouraging
+          camping on or repeatedly circling back to the same spot.
 
         Arguments:
             state: the game state to evaluate.
@@ -99,7 +150,8 @@ class PacmanAgent(Agent):
         """
 
         score = state.getScore()
-        pacman_x, pacman_y = state.getPacmanPosition()
+        pacman_pos = state.getPacmanPosition()
+        pacman_x, pacman_y = pacman_pos
         food = state.getFood()
 
         closest_food_distance = min(
@@ -112,4 +164,6 @@ class PacmanAgent(Agent):
             default=0,
         )
 
-        return score - closest_food_distance
+        visit_penalty = self.visit_count[pacman_pos] * 5
+
+        return score - closest_food_distance - visit_penalty
