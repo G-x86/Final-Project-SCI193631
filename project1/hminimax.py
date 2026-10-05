@@ -68,12 +68,19 @@ class PacmanAgent(Agent):
         next_depth = self.depth if next_index != 0 else self.depth - 1
 
         successors = state.generatePacmanSuccessors()
+        successors = sorted(
+            successors,
+            key=lambda pair: self.evaluate(pair[0]),
+            reverse=True)
 
         best_value, best_action = float("-inf"), Directions.STOP
         reversal = OPPOSITE_DIRECTION[self.last_action]
+        alpha = float("-inf")
+        beta = float("inf")
 
         for successor, action in successors:
-            value, _ = self.hminimax(successor, next_index, next_depth)
+            value, _ = self.hminimax(
+                successor, next_index, next_depth, alpha, beta)
 
             # Only breaks exact ties (difference of 0): never strong
             # enough to override a real, meaningful preference.
@@ -82,12 +89,19 @@ class PacmanAgent(Agent):
 
             if value > best_value:
                 best_value, best_action = value, action
+            alpha = max(alpha, best_value)
 
         self.last_action = best_action
         return best_action
 
-    def hminimax(self, state, agent_index, depth):
+    def hminimax(self, state, agent_index, depth,
+                 alpha=float("-inf"), beta=float("inf")):
         """Recursively computes the H-Minimax value of a state.
+
+        Alpha-beta pruning skips branches that cannot change the
+        result, so the returned value is exactly the plain
+        H-Minimax value with fewer expanded nodes. Successors are
+        ordered by the heuristic so pruning happens early.
 
         Arguments:
             state: the current game state.
@@ -95,6 +109,8 @@ class PacmanAgent(Agent):
                 (0 for Pacman, > 0 for a ghost).
             depth: remaining number of full rounds to explore before
                 using the heuristic.
+            alpha: best value the maximizer can guarantee so far.
+            beta: best value the minimizer can guarantee so far.
 
         Returns:
             A tuple `(value, action)` where `value` is the H-Minimax
@@ -121,15 +137,37 @@ class PacmanAgent(Agent):
         if not successors:
             return self.evaluate(state), Directions.STOP
 
-        values = [
-            (self.hminimax(successor, next_index, next_depth)[0], action)
-            for successor, action in successors
-        ]
-
         if agent_index == 0:
-            return max(values, key=lambda pair: pair[0])
+            successors = sorted(
+                successors,
+                key=lambda pair: self.evaluate(pair[0]),
+                reverse=True)
+            best_value = float("-inf")
+            best_action = Directions.STOP
+            for successor, action in successors:
+                value, _ = self.hminimax(
+                    successor, next_index, next_depth, alpha, beta)
+                if value > best_value:
+                    best_value, best_action = value, action
+                alpha = max(alpha, best_value)
+                if alpha >= beta:
+                    break
+            return best_value, best_action
         else:
-            return min(values, key=lambda pair: pair[0])
+            successors = sorted(
+                successors,
+                key=lambda pair: self.evaluate(pair[0]))
+            best_value = float("inf")
+            best_action = Directions.STOP
+            for successor, action in successors:
+                value, _ = self.hminimax(
+                    successor, next_index, next_depth, alpha, beta)
+                if value < best_value:
+                    best_value, best_action = value, action
+                beta = min(beta, best_value)
+                if beta <= alpha:
+                    break
+            return best_value, best_action
 
     def evaluate(self, state):
         """Heuristic evaluation of a non-terminal state.
